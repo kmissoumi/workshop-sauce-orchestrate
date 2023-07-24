@@ -6,6 +6,8 @@ Use Visual Code as your IDE.
 Explain your answers.  
 Describe your thought process.
 
+If unsure about some of the commands and usage, please supplement this workshop with the [The Missing Semester](https://missing.csail.mit.edu/).
+
 ---
 
 ### Module 1
