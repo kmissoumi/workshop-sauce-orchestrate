@@ -1,0 +1,15 @@
+**/target/
+Dockerfile*
+docker_build
+.sauce/*
+*.md
+*.zip
+*.ipa
+*.apk
+.git
+.github
+.sauce
+**/node_modules
+**/.npm
+**/.DS_Store
+**/.idea

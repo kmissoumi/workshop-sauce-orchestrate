@@ -1,0 +1,27 @@
+apiVersion: v1alpha
+kind: imagerunner
+
+suites:
+  - name: photon-js-webdriverio
+    image: suncup/photon-js:latest
+    resourceProfile: c3m3
+    workload: webdriver
+    entrypoint: sh /usr/build/get-info.sh
+    env:
+      SAUCE_USERNAME: ${SAUCE_USERNAME}
+      SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+      SAUCE_REGION: ${SAUCE_REGION}
+      SAUCE_BUILD_TYPE: Orchestrate
+    artifacts:
+      - "/root/.npm/_logs/*.log"
+      - "/usr/build/*.log"
+    files:
+      - src: "${PWD}/usr/get-info.sh"
+        dst: "/usr/build/get-info.sh"
+
+artifacts:
+  download:
+    when: always
+    match:
+      - "*"
+    directory: ./artifacts

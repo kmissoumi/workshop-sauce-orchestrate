@@ -1,0 +1,16 @@
+apiVersion: v1alpha
+kind: imagerunner
+
+suites:
+  - name: photon-js-webdriverio
+    image: suncup/photon-js:latest
+    resourceProfile: c3m3
+    workload: webdriver
+    entrypoint: npm run --prefix demo-webdriverio test.saucelabs.v3
+    env:
+      SAUCE_USERNAME: ${SAUCE_USERNAME}
+      SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+      SAUCE_REGION: ${SAUCE_REGION}
+      SAUCE_BUILD_TYPE: Orchestrate
+    artifacts:
+      - "/root/.npm/_logs/*.log"
