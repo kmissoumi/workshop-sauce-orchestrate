@@ -6,7 +6,7 @@ suites:
     image: suncup/photon-js:latest
     resourceProfile: c3m3
     workload: webdriver
-    entrypoint: sh /usr/build/get-info.sh
+    entrypoint: npm run --prefix demo-webdriverio/webdriver/best-practices test.saucelabs.v2
     env:
       SAUCE_USERNAME: ${SAUCE_USERNAME}
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
@@ -15,9 +15,6 @@ suites:
     artifacts:
       - "/root/.npm/_logs/*.log"
       - "/usr/build/*.log"
-    files:
-      - src: "${PWD}/usr/get-info.sh"
-        dst: "/usr/build/get-info.sh"
 
 artifacts:
   download:

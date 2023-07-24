@@ -14,8 +14,8 @@ Describe your thought process.
 - 1.1 Inspect the `saucectl` configuration file listed below.  
   [`.sauce/config-module-01.yml`](.sauce/config-module-01.yml)
   - What environment variables does it expect?
+    - Make sure you have all the environment variables specified set.
   - What image does it use?
-
 
 
 - 1.2 Run run `saucectl` command below. 
@@ -53,7 +53,7 @@ saucectl run --config .sauce/config-module-01.yml
 
 
 ```
-saucectl run --config .sauce/config-module-02.yml
+saucectl run --config .sauce/config-module-02-01.yml
 ```
 
 
@@ -69,6 +69,9 @@ saucectl run --config .sauce/config-module-02.yml
   - Where is the file?
     - Use the runID to download the file locally to inspect.
 
+```
+saucectl imagerunner artifacts download ${runID} "*" --target-dir artifacts/${runID} --region ${SAUCE_REGION}
+```
 
 - 2.4 What does the log from the container tell us?
   - Is this different than what the log from `saucectl` told us?
@@ -87,22 +90,25 @@ saucectl imagerunner logs ${runID}
     - This time change the entry point to run the command listed below.  
 `env`
 
-  - Try the command below next.  
-`ls -ltr`
-    - Run this new configuration.
-    - What output do you collect?
-    - What does this tell you?
-    - Have you confirmed what the issue is?
-    - Do you now think the issue is related to something else?
+    - Try the command below next.  
+`ls -la`
+      - Run this new configuration.
+      - What output do you collect?
+      - What does this tell you?
+      - Have you confirmed what the issue is?
+      - Do you now think the issue is related to something else?
 
-  - Try the command below next.  
-  `tree`
-    - Was the output truncated?
-    - Update the configuration to send the output to a log.
-    - Update the configuration to automatically download the log.
+    - Try the command below next.  
+`tree`
+      - Was the output truncated?
+      - Update the configuration to send the output to a log.
+      - Update the configuration to automatically download the log.
 
   - What about running a script with multiple commands?
 
+```
+saucectl run --config .sauce/config-module-02-05.yml
+```
 ---
 
 
@@ -146,6 +152,10 @@ docker run -it \
 
 
 
+```
+saucectl run --config .sauce/config-module-03-01.yml
+```
+
 ### Part IV 
 
 - What is the one thing needed to run these commands?
@@ -164,3 +174,19 @@ Using `saucectl` with Sauce Orchestrate.
 - Do you need a new tunnel to reach the service under test?
 - When do you need a new tunnel?
 - What can you do to avoid having to use a tunnel to access any backend services?
+
+
+
+
+### Appendix Other Commands
+
+```
+docker history --human --format "{{.CreatedBy}}: {{.Size}}" ${imageName}
+docker diff # compare two images
+```
+
+```
+# https://github.com/wagoodman/dive
+dive ${imageName}
+```
+
