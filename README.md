@@ -230,6 +230,8 @@ You have completed the _first_ part of this workshop!
     - Execute all the commands.
     - Explain your answers.
     - Describe your thought process.
+    - All the notes are in this file as HTML comments <!-- see -->
+    - Send feedback! <!-- please, thank you! >
   - Supplement this workshop with [The Missing Semester](https://missing.csail.mit.edu/).
 
 <br> 
@@ -242,6 +244,8 @@ You have completed the _first_ part of this workshop!
       - Provide the solution and explain it.
       - Direct them to the exact command needed to move on to the next step.
       - If they cannot drive further, share your screen and complete the workshop.
+    - All the notes are in this file as HTML comments <!-- see -->
+    - Send feedback! <!-- please, thank you! >
 
 
 
