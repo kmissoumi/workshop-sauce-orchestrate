@@ -226,12 +226,13 @@ You have completed the _first_ part of this workshop!
 ### Step 2 
   - Reasearch any blockers that you hit.
   - Walkthrough the entire workshop a 2nd time by yourself.
+    - Make sure you're on the latest commit of this repo! <!-- git usage is in a different workshop -->
     - Go through all the modules in order.
     - Execute all the commands.
     - Explain your answers.
     - Describe your thought process.
     - All the notes are in this file as HTML comments <!-- see -->
-    - Send feedback! <!-- please, thank you! >
+    - Send feedback! <!-- please, thank you! -->
   - Supplement this workshop with [The Missing Semester](https://missing.csail.mit.edu/).
 
 <br> 
@@ -239,13 +240,14 @@ You have completed the _first_ part of this workshop!
 ### Step 3
   - Host this workshop for a colleague.
     - Walk them through the entire workshop.
+      - Make sure you're on the latest commit of this repo!
     - This will help you become a better guide to others.
     - If they are blocked...
       - Provide the solution and explain it.
       - Direct them to the exact command needed to move on to the next step.
       - If they cannot drive further, share your screen and complete the workshop.
     - All the notes are in this file as HTML comments <!-- see -->
-    - Send feedback! <!-- please, thank you! >
+    - Send feedback! <!-- please, thank you! -->
 
 
 
