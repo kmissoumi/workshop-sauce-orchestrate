@@ -12,13 +12,3 @@ suites:
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
       SAUCE_REGION: ${SAUCE_REGION}
       SAUCE_BUILD_TYPE: Orchestrate
-    artifacts:
-      - "/root/.npm/_logs/*.log"
-      - "/usr/build/*.log"
-
-artifacts:
-  download:
-    when: always
-    match:
-      - "*"
-    directory: ./artifacts

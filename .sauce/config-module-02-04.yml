@@ -6,7 +6,7 @@ suites:
     image: suncup/photon-js:latest
     resourceProfile: c3m3
     workload: webdriver
-    entrypoint: tree /
+    entrypoint: ls -la demo-webdriverio
     env:
       SAUCE_USERNAME: ${SAUCE_USERNAME}
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}

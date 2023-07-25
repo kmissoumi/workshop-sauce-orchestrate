@@ -6,18 +6,17 @@ suites:
     image: suncup/photon-js:latest
     resourceProfile: c3m3
     workload: webdriver
-    entrypoint: sh /usr/build/get-info.sh
+    entrypoint: sh /bin/get-info.sh
     env:
       SAUCE_USERNAME: ${SAUCE_USERNAME}
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
       SAUCE_REGION: ${SAUCE_REGION}
       SAUCE_BUILD_TYPE: Orchestrate
     artifacts:
-      - "/root/.npm/_logs/*.log"
-      - "/usr/build/*.log"
+      - "/var/log/*.log"
     files:
       - src: "${PWD}/usr/get-info.sh"
-        dst: "/usr/build/get-info.sh"
+        dst: "/bin/get-info.sh"
 
 artifacts:
   download:
