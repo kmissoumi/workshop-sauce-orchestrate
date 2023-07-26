@@ -10,5 +10,5 @@ suites:
     env:
       SAUCE_USERNAME: ${SAUCE_USERNAME}
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
-      SAUCE_REGION: ${SAUCE_REGION}
+      SAUCE_REGION: us-west-1
       SAUCE_BUILD_TYPE: Orchestrate
