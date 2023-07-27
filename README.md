@@ -53,14 +53,14 @@ saucectl run --config .sauce/config-module-01.yml
 
 ### Module 2
 
-#### 2.1 Inspect
+#### 2.1a Inspect
 
 - Inspect the `saucectl` configuration file listed below.  
   [`.sauce/config-module-02-01.yml`](.sauce/config-module-02-01.yml)  
   - Describe what it does.  
 
 
-#### 2.2 Run
+#### 2.1b Run
 - Run the `saucectl` command below.
   - Describe what happened.
   - If successful, what did it do?
@@ -159,6 +159,7 @@ saucectl run --config .sauce/config-module-02-05-03.yml
         <!-- The runner configuration only manages the Sauce Orchestrate container run, which is represented by the provided runID.
         If there is an error and no runID is returned, then the failure happened early in the process. -->
         
+        <!-- update the script >
 
 > Note: saucectl can download job artifacts using the [_artifacts download_ command](https://docs.saucelabs.com/dev/cli/saucectl/artifacts/download/)
 
@@ -288,18 +289,23 @@ You have completed the _first_ part of this workshop!
       `saucectl run --config .sauce/config-module-01.yml`
       
   - Module 2
-    - 2.2 Runner Configuration — Triage Error  
+    - 2.1 Runner Configuration — Triage Error  
       `saucectl run --config .sauce/config-module-02-01.yml`
 
-    - 2.3 Runner Configuration — Add Container Artifact  
+    - 2.2 Runner Configuration — Add Container Artifact  
       `saucectl run --config .sauce/config-module-02-02.yml`
 
-    - 2.4 Imagerunner Command — Download Container Artifact  
+    - 2.3 Imagerunner Command — Download Container Artifact  
       ```
       export runID=
       saucectl imagerunner artifacts download ${runID} "*" --target-dir artifacts/runID-${runID}
       ```
     
+    - 2.4 Imagerunner Command — Download Console Log
+    ```
+    export runID=
+    saucectl imagerunner logs ${runID} 
+    ```
     - 2.5.1 Runner Configuration — Set `env` as Entrypoint  
     `saucectl run --config .sauce/config-module-02-05-01.yml`
 
