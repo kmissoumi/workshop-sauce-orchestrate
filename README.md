@@ -172,10 +172,14 @@ Up to this point...
 - We have not used Docker.
 - We have not built an image.  
 - We have not looked at a DOCKER file.
+- We have launched containers on Sauce Orchestrate.
 
-Let's do the same investigation directly on the image.
+Let's do the same investigation on a local container.
 This provides us with an interactive session and will save a lot of time.
 What if you don't have access to the image?
+<!-- likely this will be the case and that is OK, the practice here will help you guide the person with access to the image -->
+<!-- to help them once; provide the knowledge to directly troubleshoot future issues without your assistance -->
+
 
 Keep everything as close as possible to the original configuration.  
 Use the same variables passed in the `saucectl` configuration file.
@@ -207,6 +211,19 @@ docker run -it \
   <!-- the entrypoint in the runner configuration
   the container is ephemeral
   and the image is immutable -->
+- What is the `platform` parameter and why is it set to `linux/amd64`?
+  - Docker images can be built for [different architectures and operating systems](https://docs.docker.com/build/building/multi-platform/).
+  - Try the commands below.  
+  `uname -m`
+  `uname -o`
+    - What machine architecture are you using?
+      - `x86_64` is the same `amd64`.
+      - `arm64` is different.
+    - What operating system are you using?
+
+>  
+> Sauce Orchestrate supports images built for the `linux/amd64` platform.
+>  
 
 #### Part II
 
@@ -332,6 +349,16 @@ You have completed the _first_ part of this workshop!
 <br>
 
 ---
+
+
+## Resources
+
+- [Getting Started with Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/getting-started/)
+- [saucectl Configuration Options for Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/saucectl-configuration/)
+- [Sauce Internals](https://opensaucelabs.atlassian.net/wiki/spaces/SE/pages/145195009/Sauce+Orchestrate)
+
+> The images used in this workshop are built using the [kmissoumi/photon-images](https://github.com/kmissoumi/photon-images) repo.
+
 
 ## Appendix Other Commands
 
