@@ -3,12 +3,11 @@
 This workshop provides practical exercises and example workflows for Sauce Orchestrate.
 
 
-- Before starting.
+- Before starting. <!-- use homebrew -->
   - [Install Visual Code](https://code.visualstudio.com/docs/setup/setup-overview). 
   - Run this command  
   `docker image pull --platform linux/amd64 suncup/photon-js:latest`
   - [Install the latest release of `saucectl`](https://docs.saucelabs.com/dev/cli/saucectl/#installing-saucectl).
-
 - During the workshop.
   - Explain your answers.  
   - Describe your thought process.
@@ -26,11 +25,22 @@ This workshop provides practical exercises and example workflows for Sauce Orche
     - Make sure you have all the environment variables specified set.
   <!-- two ways to fail, a blank env value or a local $env that is not set SAUCE_REGION is not common -->
   <!-- the error message is vague so it is possible to fix the NASA_API_KEY issue and still have the SAUCE_REGION being unset cause an error you can `env|grep SAUCE` -->
-  <!-- four ways to proceed. 1- comment out 2- enter string 3- enter env like the others and then export in shell 4- pass --env NASA_API_KEY via parameter -->
+  <!-- three ways to proceed.
+  1- comment out
+  2- enter string
+  3- leave as is and export env in terminal
+  -->
+
+  <!-- note you can also pass environment variables to the Orchestrate container via the env parameter, but this doesn't overlay on top of the configuration file
+  so if you needed to pass an environment variable to the container and preferred to do it via parameter then you shouldn't have the env key for that variable in the configuration file
+  this needs to be re-verified, we were running different versions of saucectl -->
   - What image does it use?
   - What is the [`resourceProfile`](https://docs.saucelabs.com/orchestrate/saucectl-configuration/#resourceprofile) key?
     - Hover over this key in the configuration file.
       - Did the schema validation overlay pop up?
+  <!-- if not, in the left sidebar of Visual Studio Code, select the Tetris blocks and search for yaml
+  install and enable the YAML Language Support extension  -->
+
     - Did you see any other configuration keys that might be useful?
 
 
@@ -159,7 +169,6 @@ saucectl run --config .sauce/config-module-02-05-03.yml
         <!-- The runner configuration only manages the Sauce Orchestrate container run, which is represented by the provided runID.
         If there is an error and no runID is returned, then the failure happened early in the process. -->
         
-        <!-- update the script >
 
 > Note: saucectl can download job artifacts using the [_artifacts download_ command](https://docs.saucelabs.com/dev/cli/saucectl/artifacts/download/)
 
@@ -186,7 +195,7 @@ Keep everything as close as possible to the original configuration.
 Use the same variables passed in the `saucectl` configuration file.
 
 
-#### Part I
+#### 3.1 Interactive Session on Local Container
 
 
 - Run the command below.
@@ -200,7 +209,6 @@ docker run -it \
     --platform linux/amd64 \
     --env SAUCE_USERNAME=${SAUCE_USERNAME} \
     --env SAUCE_ACCESS_KEY=${SAUCE_ACCESS_KEY} \
-    --env SAUCE_REGION=${SAUCE_REGION} \
     --env SAUCE_BUILD_TYPE="Docker Local Dev" \
     ${imageName} \
     sh
@@ -215,18 +223,18 @@ docker run -it \
 - What is the `platform` parameter and why is it set to `linux/amd64`?
   - Docker images can be built for [different architectures and operating systems](https://docs.docker.com/build/building/multi-platform/).
   - Try the commands below.  
-  `uname -m`
+  `uname -m`  
   `uname -o`
     - What machine architecture are you using?
       - `x86_64` is the same `amd64`.
       - `arm64` is different.
     - What operating system are you using?
 
->  
-> Sauce Orchestrate supports images built for the `linux/amd64` platform.
->  
 
-#### Part II
+> Sauce Orchestrate supports images built for the `linux/amd64` platform.
+
+
+#### 3.2 Working Command on Local Container
 
 - Go through all the steps from Module 2 in this interactive session.
   - Is the [`get-info.sh`](usr/get-info.sh) script there?
@@ -235,22 +243,28 @@ docker run -it \
   - Are you able to run the test from the base directory?
   <!-- you will need to run the command from the directory you start in -->
   <!-- the entrypoint in .sauce/config-module-03-01.yml is the correct command you need -->
-  <!-- you can modify the docker run command and validate that it is the proper entrypoint -->
 
 
-#### Part III
+
+#### 3.3 Validate the Entrypoint on a Local Container
 
 - Get the test to run directly from the container.
-  - What should the _entrypoint_ be? 
-  - Fix it and re-run via `saucectl`.
+  - What _should_ the entrypoint be? 
+  <!-- you can modify the docker run command and validate that it is the proper entrypoint -->
+  <!-- we now know this entrypoint is valid for this specific image -->
+  <!-- on that topic, the image tag we are using is `latest`, what does that mean? -->
+  <!-- discussion for another module on image maintenance and building -->
 
 
+#### 3.4 Validate the Entrypoint on an Orchestrate Container
+
+- Fix the configuration and re-run via `saucectl`.
 
 ```
 saucectl run --config .sauce/config-module-03-01.yml
 ```
 
-#### Part IV 
+#### 3.5 Module Recap
 
 - What is the one thing needed to run these commands?
   <!-- access to the image -->
@@ -261,20 +275,34 @@ saucectl run --config .sauce/config-module-03-01.yml
 ---
 
 
-## Congratulations!
+## Workshop Summary
 
-You have completed the _first_ part of this workshop!
+Congratulations! — You have completed the _first_ part of this workshop!
 
 <br>
 
-## Next Up
 
-### Step 2 
+- Module 1
+  - 1.2 Runner Configuration — Environment Variable(s)        
+- Module 2
+  - 2.1 Runner Configuration — Triage Error  
+  - 2.2 Runner Configuration — Collect Orchestrate Container Artifact  
+  - 2.3 Imagerunner Command — Download Orchestrate Container Artifact  
+  - 2.4 Imagerunner Command — Print Orchestrate Container Console Log
+  - 2.5 Runner Configuration — Entrypoints & Files
+- Module 3
+  - 3.1 Local Container — Interactive Session 
+  - 3.2 Local Container — Working Command
+  - 3.3 Local Container — Working Entrypoint
+  - 3.4 Orchestrate Container — Working Entrypoint
+  
+<br>
+
+### PART II — _Self Guided Edition_
   - Reasearch any blockers that you hit.
   - Walkthrough the entire workshop a 2nd time by yourself.
     - Make sure you're on the latest commit of this repo! <!-- git usage is a different workshop -->
     - Go through all the modules in order.
-    - Review the command summary listed below.
     - Execute all the commands.
     - Explain your answers.
     - Describe your thought process.
@@ -283,62 +311,10 @@ You have completed the _first_ part of this workshop!
   - Supplement this workshop with [The Missing Semester](https://missing.csail.mit.edu/).
 
 
-- Workshop Summary
-  - Module 1
-    - 1.2 Runner Configuration — Missing Environment Variable(s)  
-      `saucectl run --config .sauce/config-module-01.yml`
-      
-  - Module 2
-    - 2.1 Runner Configuration — Triage Error  
-      `saucectl run --config .sauce/config-module-02-01.yml`
-
-    - 2.2 Runner Configuration — Add Container Artifact  
-      `saucectl run --config .sauce/config-module-02-02.yml`
-
-    - 2.3 Imagerunner Command — Download Container Artifact  
-      ```
-      export runID=
-      saucectl imagerunner artifacts download ${runID} "*" --target-dir artifacts/runID-${runID}
-      ```
-    
-    - 2.4 Imagerunner Command — Download Console Log
-    ```
-    export runID=
-    saucectl imagerunner logs ${runID} 
-    ```
-    - 2.5.1 Runner Configuration — Set `env` as Entrypoint  
-    `saucectl run --config .sauce/config-module-02-05-01.yml`
-
-    - 2.5.2 Runner Configuration — Set `ls` as Entrypoint  
-    `saucectl run --config .sauce/config-module-02-05-02.yml`
-
-    - 2.5.3 Runner Configuration — Upload File to Container  
-      `saucectl run --config .sauce/config-module-02-05-03.yml`
-  
-  - Module 3
-    - 3.0 Docker Container — Interactive Session 
-      ```
-      # use this image
-      export imageName='suncup/photon-js:latest'
-
-      # start a shell
-      docker run -it \
-        --platform linux/amd64 \
-        --env SAUCE_USERNAME=${SAUCE_USERNAME} \
-        --env SAUCE_ACCESS_KEY=${SAUCE_ACCESS_KEY} \
-        --env SAUCE_REGION=${SAUCE_REGION} \
-        --env SAUCE_BUILD_TYPE="Docker Local Dev" \
-        ${imageName} \
-        sh
-      ```  
-    - 3.1 Runner Configuration — Fixed Entrypoint  
-      `saucectl run --config .sauce/config-module-03-01.yml`
-  
-
 
 <br> 
 
-### Step 3
+### PART III — _BE THE GUIDE_
   - Host this workshop for a colleague.
     - Walk them through the entire workshop.
       - Make sure you're on the latest commit of this repo!
@@ -351,22 +327,22 @@ You have completed the _first_ part of this workshop!
     - Send feedback! <!-- please, thank you! -->
 
 
-
 <br>
 
 ---
 
+# Appendix 
 
 ## Resources
 
 - [Getting Started with Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/getting-started/)
 - [saucectl Configuration Options for Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/saucectl-configuration/)
-- [Sauce Internals](https://opensaucelabs.atlassian.net/wiki/spaces/SE/pages/145195009/Sauce+Orchestrate)
+- [Sauce Orchestrate Internals](https://opensaucelabs.atlassian.net/wiki/spaces/SE/pages/145195009/Sauce+Orchestrate)
 
 > The images used in this workshop are built using the [kmissoumi/photon-images](https://github.com/kmissoumi/photon-images) repo.
 
 
-## Appendix Other Commands
+## Other Commands
 
 ```
 docker history --human --format "{{.CreatedBy}}: {{.Size}}" ${imageName}
