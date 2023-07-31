@@ -354,3 +354,6 @@ docker diff # compare two images
 dive ${imageName}
 ```
 
+
+
+<!-- generate .tree via `tree -aI 'node_modules|artifacts|_|*.tar|.git|.tree' > .tree` -->
