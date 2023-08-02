@@ -16,4 +16,6 @@ which sh bash node npm tree pwd env ls > which.log 2>&1
 rm -fr /usr/build/demo-webdriverio/webdriver/best-practices/node_modules
 tree /usr/build > ${logPath}/tree.log   2>&1
 
+printf '\n%s script run complete!\n' ${0}
+
 exit 0
