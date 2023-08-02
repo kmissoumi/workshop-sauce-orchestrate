@@ -25,10 +25,13 @@ This workshop provides practical exercises and example workflows for Sauce Orche
     - Make sure you have all the environment variables specified set.
   <!-- two ways to fail, a blank env value or a local $env that is not set SAUCE_REGION is not common -->
   <!-- the error message is vague so it is possible to fix the NASA_API_KEY issue and still have the SAUCE_REGION being unset cause an error you can `env|grep SAUCE` -->
-  <!-- three ways to proceed.
-  1- comment out
-  2- enter string
-  3- leave as is and export env in terminal
+  <!--
+  ways to proceed
+  1- remove or comment out
+  2- enter a string or environment variable 
+  
+  you can also pass environment variables via run-time parameter
+  e.g. saucectl run --env NASA_API_KEY=5f95f9099fed4797bc26bd3cbb5097c9
   -->
 
   <!-- note you can also pass environment variables to the Orchestrate container via the env parameter, but this doesn't overlay on top of the configuration file
@@ -233,6 +236,11 @@ docker run -it \
 
 > Sauce Orchestrate supports images built for the `linux/amd64` platform.
 
+<!--
+image format follows <registry>/<org>/<image>:<tag> 
+suncup/photon-js:latest is the same as docker.io/suncup/photon-js:latest
+quay.io/saucelabs/piestry:latest
+-->
 
 #### 3.2 Working Command on Local Container
 
@@ -250,10 +258,15 @@ docker run -it \
 
 - Get the test to run directly from the container.
   - What _should_ the entrypoint be? 
-  <!-- you can modify the docker run command and validate that it is the proper entrypoint -->
-  <!-- we now know this entrypoint is valid for this specific image -->
-  <!-- on that topic, the image tag we are using is `latest`, what does that mean? -->
-  <!-- discussion for another module on image maintenance and building -->
+  <!--
+  you can modify the docker run command and validate that it is the proper entrypoint
+  we now know this entrypoint is valid for this specific image
+  -->
+
+  <!--
+  the image tag we are using is `latest`, what does that mean?
+  discussion for another module on image maintenance and building
+  -->
 
 
 #### 3.4 Validate the Entrypoint on an Orchestrate Container
@@ -269,7 +282,12 @@ saucectl run --config .sauce/config-module-03-01.yml
 - What is the one thing needed to run these commands?
   <!-- access to the image -->
 - What are you able to fix, change, or update?
-  <!-- still only the entrypoint and the runner configuration -->
+  <!--
+  runner configuration, i.e everything that is _NOT_ the image
+    save artifacts from the orchestrate container
+    add files to the orchestrate container  
+  -->
+
 
 
 ---
@@ -335,11 +353,12 @@ Congratulations! — You have completed the _first_ part of this workshop!
 
 ## Resources
 
+
 - [Getting Started with Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/getting-started/)
 - [saucectl Configuration Options for Sauce Orchestrate](https://docs.saucelabs.com/orchestrate/saucectl-configuration/)
 - [Sauce Orchestrate Internals](https://opensaucelabs.atlassian.net/wiki/spaces/SE/pages/145195009/Sauce+Orchestrate)
 
-> The images used in this workshop are built using the [kmissoumi/photon-images](https://github.com/kmissoumi/photon-images) repo.
+> Images are built with [kmissoumi/photon-images](https://github.com/kmissoumi/photon-images) and [hosted on Docker Hub](https://hub.docker.com/u/suncup).
 
 
 ## Other Commands
