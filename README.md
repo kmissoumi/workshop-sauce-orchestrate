@@ -290,6 +290,44 @@ saucectl run --config .sauce/config-module-03-01.yml
 
 
 
+### Module 4 — Multi-Service Sauce Orchestrate
+
+This module provides example configuration for a test suite with sidecar containers.  
+  - These sidecars are defined in the suite's services section.  
+  - All the containers can be reached via `localhost:port`.  
+  - This example also shows how to stream the console logs.  
+
+Inspect the `saucectl` configuration file listed below.  
+  [`.sauce/config-module-04-01.yml`](.sauce/config-module-04-01.yml)  
+  - What services are defined in the configuration?  
+  - What does the Sauce Connect tunnel provide access to in this example?  
+  - How are dependencies validated before the test suite starts?  
+
+
+```sh
+# saucectl support for live logs requires version 0.171.0 or later
+saucectl --version
+
+# export environment variables
+env |grep SAUCE
+export SAUCE_USERNAME=
+export SAUCE_ACCESS_KEY=
+export SAUCE_TUNNEL_NAME=
+
+# run multi-service orchestrate example
+saucectl run --live-logs --config .sauce/config-module-04-01.yml
+
+# main suite will pause
+#   launch a live browser session with tunnel
+#       validate services are running as expected
+#           open page http://localhost:80
+#           open page http://localhost:8080/__admin/mappings
+
+# allow suite to complete
+#   check artifacts directory for logs 
+```
+
+
 ---
 
 
@@ -313,6 +351,8 @@ Congratulations! — You have completed the _first_ part of this workshop!
   - 3.2 Local Container — Working Command
   - 3.3 Local Container — Working Entrypoint
   - 3.4 Orchestrate Container — Working Entrypoint
+- Module 4
+  - 4.1 Orchestrate Container — Services & Sauce Connect
   
 <br>
 

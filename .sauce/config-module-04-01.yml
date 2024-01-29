@@ -1,0 +1,56 @@
+apiVersion: v1alpha
+kind: imagerunner
+
+sauce:
+  region: eu-central-1
+
+suites:
+  - name: my-test-suite
+    image: node:18-alpine
+    resourceProfile: c3m3
+    workload: webdriver
+    entrypoint: sh /bin/check-services.sh
+    env:
+      SAUCE_USERNAME: ${SAUCE_USERNAME}
+      SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+      SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
+      SAUCE_REGION: eu-central-1
+      SAUCE_BUILD_TYPE: Orchestrate
+    artifacts:
+      - "/var/log/*.log"
+      - "/app/log/images/*"
+    files:
+      - src: "${PWD}/usr/check-services.sh"
+        dst: "/bin/check-services.sh"
+
+    services:
+    # nginx port is 80
+    - name: nginx
+      image: nginx:latest
+      files:
+        - src: "${PWD}/usr/index.html"
+          dst: "/usr/share/nginx/html/index.html"
+
+
+    # wiremock port is 8080
+    - name: wiremock
+      image: wiremock/wiremock:latest
+
+    # sauce connect readiness port is 8032
+    - name: tunnel
+      image: saucelabs/sauce-connect:4.9
+      env:
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
+        SAUCE_REGION: eu-central-1
+
+
+artifacts:
+  cleanup: false
+  download:
+    when: always
+    match:
+      - "*"
+    directory: ./artifacts/
+
