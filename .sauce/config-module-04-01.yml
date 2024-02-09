@@ -2,7 +2,7 @@ apiVersion: v1alpha
 kind: imagerunner
 
 sauce:
-  region: eu-central-1
+  region: ${SAUCE_REGION}
 
 suites:
   - name: my-test-suite
@@ -14,23 +14,30 @@ suites:
       SAUCE_USERNAME: ${SAUCE_USERNAME}
       SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
       SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
-      SAUCE_REGION: eu-central-1
+      SAUCE_REGION: ${SAUCE_REGION}
       SAUCE_BUILD_TYPE: Orchestrate
     artifacts:
       - "/var/log/*.log"
-      - "/app/log/images/*"
     files:
       - src: "${PWD}/usr/check-services.sh"
         dst: "/bin/check-services.sh"
 
     services:
     # nginx port is 80
-    - name: nginx
+    - name: nginx-1
       image: nginx:latest
       files:
         - src: "${PWD}/usr/index.html"
           dst: "/usr/share/nginx/html/index.html"
 
+    # nginx no. 2 port is 8888
+    - name: nginx-2
+      image: nginx:latest
+      files:
+        - src: "${PWD}/usr/index2.html"
+          dst: "/usr/share/nginx/html/index.html"
+        - src: "${PWD}/usr/nginx.conf"
+          dst: "/etc/nginx/conf.d/default.conf"
 
     # wiremock port is 8080
     - name: wiremock
@@ -43,7 +50,7 @@ suites:
         SAUCE_USERNAME: ${SAUCE_USERNAME}
         SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
         SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
-        SAUCE_REGION: eu-central-1
+        SAUCE_REGION: ${SAUCE_REGION}
 
 
 artifacts:
@@ -53,4 +60,3 @@ artifacts:
     match:
       - "*"
     directory: ./artifacts/
-
