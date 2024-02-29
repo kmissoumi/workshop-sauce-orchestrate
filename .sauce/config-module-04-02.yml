@@ -1,0 +1,70 @@
+apiVersion: v1alpha
+kind: imagerunner
+
+
+# https://docs.saucelabs.com/secure-connections/sauce-connect/setup-configuration/specialized-environments/#testing-mobile-devices-against-localhost
+sauce:
+  region: ${SAUCE_REGION}
+
+suites:
+  - name: my-test-suite
+    image: node:18-alpine
+    resourceProfile: c3m3
+    workload: webdriver
+    entrypoint: sh /bin/check-services.sh
+    env:
+      SAUCE_USERNAME: ${SAUCE_USERNAME}
+      SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+      SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
+      SAUCE_REGION: ${SAUCE_REGION}
+      SAUCE_BUILD_TYPE: Orchestrate
+    artifacts:
+      - "/var/log/*.log"
+    files:
+      - src: "${PWD}/usr/check-services.sh"
+        dst: "/bin/check-services.sh"
+
+    services:
+    # nginx port is 80
+    #- name: nginx-1
+    #  image: nginx:latest
+    #  files:
+     #   - src: "${PWD}/usr/index.html"
+     #     dst: "/usr/share/nginx/html/index.html"
+
+    # nginx no. 2 port is 8888
+   # - name: nginx-2
+   #   image: nginx:latest
+    #  files:
+    #    - src: "${PWD}/usr/index2.html"
+     #     dst: "/usr/share/nginx/html/index.html"
+    #    - src: "${PWD}/usr/nginx.conf"
+     #     dst: "/etc/nginx/conf.d/default.conf"
+
+    # wiremock port is 8080
+    - name: wiremock
+      image: wiremock/wiremock:latest
+
+    # sauce connect readiness port is 8032
+    # use hostname localdev for RDC local routing
+    - name: tunnel
+      image: saucelabs/sauce-connect:4.9
+    #  entrypoint: sh -c "chmod +x /bin/local-routing.sh &&  /bin/local-routing.sh"
+      entrypoint: sh -c 'echo "127.0.0.1 mockserver localhost" >> /etc/hosts; cat /etc/hosts; env; getconf -a; exec /entrypoint.sh'
+    #  files:
+    #  - src: "${PWD}/usr/local-routing.sh"
+    #    dst: "/bin/local-routing.sh"
+      env:
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
+        SAUCE_REGION: ${SAUCE_REGION}
+
+
+artifacts:
+  cleanup: false
+  download:
+    when: always
+    match:
+      - "*"
+    directory: ./artifacts/
