@@ -51,6 +51,7 @@ suites:
         SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
         SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
         SAUCE_REGION: ${SAUCE_REGION}
+        SAUCE_TUNNEL_DOMAINS: "localhost,test-runner.internal"
 
 
 artifacts:
