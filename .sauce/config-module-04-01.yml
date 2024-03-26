@@ -1,9 +1,6 @@
 apiVersion: v1alpha
 kind: imagerunner
 
-sauce:
-  region: ${SAUCE_REGION}
-
 suites:
   - name: my-test-suite
     image: node:18-alpine

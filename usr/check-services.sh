@@ -12,21 +12,22 @@ WIREMOCK_PORT=8080
 
 
 check_services() {
-    printf '\n Waiting for Sauce Connect to start...'
-    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:8032/readiness
-    printf '\n\n\n Sauce Connect tunnel is ready!\n'
 
     printf '\n Waiting for WireMock to start...'
-    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${WIREMOCK_PORT}/__admin/mappings
-    printf '\n\n\n WireMock is ready!\n'
+    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${WIREMOCK_PORT}/__admin/mappings \
+    && printf '\n\n\n WireMock is ready!\n' || printf '\n\n\n WireMock is NOTOK!\n'
+
+    printf '\n Waiting for Sauce Connect to start...'
+    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:8032/readiness \
+    && printf '\n\n\n Sauce Connect tunnel is ready!\n' || printf '\n\n\n Sauce Connect is NOTOK!\n'
 
     printf '\n Waiting for NGINX to start...'
-    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${NGINX_PORT_01}
-    printf '\n\n\n NGINX is ready!\n'
+    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${NGINX_PORT_01} \
+    && printf '\n\n\n NGINX is ready!\n' || printf '\n\n\n NGINX is NOTOK!\n'
 
     printf '\n Waiting for NGINX No. 2 to start...'
-    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${NGINX_PORT_02}
-    printf '\n\n\n NGINX is ready!\n'
+    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${NGINX_PORT_02} \
+    && printf '\n\n\n NGINX is ready!\n' || printf '\n\n\n NGINX is NOTOK!\n'
 }
 
 
@@ -39,8 +40,12 @@ get_index () {
 }
 
 
-check_services
-get_index
+#check_services
+#get_index
+
+printf '\n Waiting for Sauce Connect to start...'
+wget --retry-connrefused --retry-on-http-error=400,503 --tries=5 http://localhost:8032/readiness \
+&& printf '\n\n\n Sauce Connect tunnel is ready!\n' || printf '\n\n\n Sauce Connect is NOTOK!\n'
 
 pwd         > ${logPath}/pwd.log    2>&1
 env         > ${logPath}/env.log    2>&1

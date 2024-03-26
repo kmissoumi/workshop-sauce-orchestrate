@@ -1,0 +1,91 @@
+#!/bin/bash -ex
+#
+# 2024-03-22
+# kareem@missoumi.org
+#
+#
+# Copyright (c) 2024, Kareem Missoumi
+# All rights reserved.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+#
+#
+
+protoHost="https://api.${SAUCE_REGION}.saucelabs.com"
+userKey="${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}"
+
+function pre_flight {
+  binCheckCurl=$(command -v curl)
+  binCheckJq=$(command -v jq)
+  [[ -z ${SAUCE_USERNAME} || -z ${SAUCE_ACCESS_KEY} || -z ${SAUCE_REGION} ]] && printf "\nPlease set environment variables for "SAUCE_USERNAME", "SAUCE_ACCESS_KEY", and "SAUCE_REGION".\n" && exit 2
+  [[ -z ${binCheckJq} || -z ${binCheckCurl} ]] && printf "\nPlease ensure "curl" and "jq" are installed and in path.\n"  && exit 2
+}
+
+
+function sauce_get {
+  r=$(curl  --request GET \
+            --silent \
+            --user ${userKey} \
+            --write-out "\n%{http_code}" \
+            --header "Accept: application/json" \
+            ${protoHost}/${1})
+
+  httpStatus="${r##*$'\n'}"
+  r="${r%????}"
+  jq -r <<< "${r}"
+}
+
+
+function sauce_delete {
+  r=$(curl  --request DELETE \
+            --silent \
+            --user ${userKey} \
+            --write-out "\n%{http_code}" \
+            --header "Content-Type: application/json" \
+            ${protoHost}/${1})
+
+  httpStatus="${r##*$'\n'}"
+  r="${r%????}"
+  jq  --arg httpStatus ${httpStatus} '. += {"httpStatus": $httpStatus}' <<< "${r}"
+}
+
+
+function tunnels_info_get {
+  method="rest/v1/${SAUCE_USERNAME}/tunnels?full=true"
+  sauce_get ${method}
+}
+
+
+function tunnel_get_id_by_name {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+  pre_flight
+  r=$(tunnels_info_get)
+  jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME)|select(.status == "running") |.id' <<< "${r}"
+}
+
+
+function tunnel_metadata_extra_get_so_runid {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+  pre_flight
+  r=$(tunnels_info_get)
+  jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME) |select(.status == "running") |.metadata.extra.runID' <<< "${r}"
+}
+
+
+function tunnel_metadata_hostname_get_so_runid {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+  pre_flight
+  r1=$(tunnels_info_get)
+  r2=$(jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME) |select(.status == "running") |.metadata.hostname' <<< "${r1}")
+  printf '%s\n' ${r2%%-*} 
+}
+
+
+function tunnel_stop_by_name {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+  pre_flight
+  SAUCE_TUNNEL_ID=$(tunnel_get_id_by_name ${SAUCE_TUNNEL_NAME})
+  method="/rest/v1/${SAUCE_USERNAME}/tunnels/${SAUCE_TUNNEL_ID}"
+  sauce_delete ${method}
+}

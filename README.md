@@ -31,7 +31,7 @@ This workshop provides practical exercises and example workflows for Sauce Orche
   2- enter a string or environment variable 
   
   you can also pass environment variables via run-time parameter
-  e.g. saucectl run --env NASA_API_KEY=5f95f9099fed4797bc26bd3cbb5097c9
+  e.g. saucectl run  --region ${SAUCE_REGION} --env NASA_API_KEY=5f95f9099fed4797bc26bd3cbb5097c9
   -->
 
   <!-- note you can also pass environment variables to the Orchestrate container via the env parameter, but this doesn't overlay on top of the configuration file
@@ -57,8 +57,8 @@ This workshop provides practical exercises and example workflows for Sauce Orche
   - What is a runID?
 
 
-```
-saucectl run --config .sauce/config-module-01.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-01.yml
 ```
 
 ---
@@ -84,8 +84,8 @@ saucectl run --config .sauce/config-module-01.yml
       - Write it down here.
 
 
-```
-saucectl run --config .sauce/config-module-02-01.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-02-01.yml
 ```
 
 
@@ -98,8 +98,8 @@ saucectl run --config .sauce/config-module-02-01.yml
 
 > This same configuration can be used to download custom reports or test artifacts that are written to the container.
 
-```
-saucectl run --config .sauce/config-module-02-02.yml
+```sh
+saucectl run --region ${SAUCE_REGION}--config .sauce/config-module-02-02.yml
 ```
 
 #### 2.3 Download
@@ -112,7 +112,7 @@ saucectl run --config .sauce/config-module-02-02.yml
     <!-- copy the runID from the previous runner output, type export and then double click the runID in the terminal and do a copy/paste, less typing here, it should be fast -->  
   
 
-```
+```sh
 saucectl imagerunner artifacts download ${runID} "*" --target-dir artifacts/runID-${runID}
 ```
 
@@ -123,7 +123,7 @@ saucectl imagerunner artifacts download ${runID} "*" --target-dir artifacts/runI
     - Confirm the answer needed was not already provided.
       <!-- at the previous step, did enter your runID directly or did you export it? -->
 
-```
+```sh
 saucectl imagerunner logs ${runID} 
 ```
 
@@ -136,8 +136,8 @@ saucectl imagerunner logs ${runID}
     - This time change the entry point to run the command listed below.  
 `env`
 
-```
-saucectl run --config .sauce/config-module-02-05-01.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-02-05-01.yml
 ```
 
   - Try the command below next.  
@@ -148,8 +148,8 @@ saucectl run --config .sauce/config-module-02-05-01.yml
     - Do you now think the issue is related to something else?  
 `ls -la demo-webdriverio`
 
-```
-saucectl run --config .sauce/config-module-02-05-02.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-02-05-02.yml
 ```
 
   - What if the output was truncated? <!-- it isn't, probably, I dunno -->
@@ -159,8 +159,8 @@ saucectl run --config .sauce/config-module-02-05-02.yml
   
 
 
-```
-saucectl run --config .sauce/config-module-02-05-03.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-02-05-03.yml
 ```
 
   - What did this configuration file do?
@@ -203,7 +203,7 @@ Use the same variables passed in the `saucectl` configuration file.
 
 - Run the command below.
   
-```
+```sh
 # use this image
 export imageName='suncup/photon-js:latest'
 
@@ -273,8 +273,8 @@ quay.io/saucelabs/piestry:latest
 
 - Fix the configuration and re-run via `saucectl`.
 
-```
-saucectl run --config .sauce/config-module-03-01.yml
+```sh
+saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-03-01.yml
 ```
 
 #### 3.5 Module Recap
@@ -290,7 +290,8 @@ saucectl run --config .sauce/config-module-03-01.yml
 
 
 
-### Module 4 — Multi-Service Sauce Orchestrate
+### Module 4 — Multi-Service Sauce Orchestrate — Test Suite and Complete Test Environment Bundle
+
 
 This module provides example configuration for a test suite with sidecar containers.  
   - These sidecars are defined in the suite's services section.  
@@ -304,18 +305,22 @@ Inspect the `saucectl` configuration file listed below.
   - How are dependencies validated before the test suite starts?  
 
 
+#### 4.1 Mutli-Service Sauce Orchestrate — Services & Sauce Connect
+
 ```sh
 # saucectl support for live logs requires version 0.171.0 or later
 saucectl --version
 
 # export environment variables
 env |grep SAUCE
+export SAUCE_REGION=
 export SAUCE_USERNAME=
 export SAUCE_ACCESS_KEY=
 export SAUCE_TUNNEL_NAME=
 
+
 # run multi-service orchestrate example
-saucectl run --live-logs --config .sauce/config-module-04-01.yml
+saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-04-01.yml
 
 # main suite will pause
 #   launch a live browser session with tunnel
@@ -327,6 +332,76 @@ saucectl run --live-logs --config .sauce/config-module-04-01.yml
 #   check artifacts directory for logs 
 ```
 
+
+#### 4.2  Mutli-Service Sauce Orchestrate — Standalone Test Environments
+
+
+```sh
+
+# export environment variables
+env |grep SAUCE
+export SAUCE_REGION=
+export SAUCE_USERNAME=
+export SAUCE_ACCESS_KEY=
+
+# tunnel name must be unique, adding the value to file to reference in 2nd shell
+export SAUCE_TUNNEL_NAME="wiremock-net-$(uuidgen)" && printf '%s' ${SAUCE_TUNNEL_NAME} > my_tunnel_name
+
+# run multi-service orchestrate example
+# the main suite is the sauce connect instance + six wiremock instances as services
+# 
+# live logs are usuful for development and exploratory testing
+#   console logs are also available via saucectl imagerunner logs
+#   https://docs.saucelabs.com/dev/cli/saucectl/imagerunner/logs/
+saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-04-02.yml
+
+# start a new shell
+env |grep SAUCE
+export SAUCE_REGION=
+export SAUCE_USERNAME=
+export SAUCE_ACCESS_KEY=
+
+# set the tunnel name from the my_tunnel_name file we created earlier
+export SAUCE_TUNNEL_NAME=$(head -n 1 my_tunnel_name)
+echo ${SAUCE_TUNNEL_NAME}
+
+# check sauce connect status, will only return id for running tunnels
+# once the tunnel id is returned
+#   it means the wiremocks were all started and passed the health check
+#   and sauce connect is up and running
+#
+# the tunnel.lib is an API wrapper
+#   you can re-implement or extend as needed
+#   it calls methods documented at the link below
+#   https://docs.saucelabs.com/dev/api/connect/ 
+source ./usr/tunnel.lib
+tunnel_get_id_by_name ${SAUCE_TUNNEL_NAME}
+
+
+# start xcuitest/espresso tests
+#   or other test suite
+#   make sure to use the tunnel name as set earlier
+#   
+#   as you access the tunnel and wiremocks, log messages will show on the orchestrate run
+
+
+# after your tests suite is complete
+#   gracefully stop the orchestrate instance
+#   the same library sourced earlier can be used to simplify this step
+# 
+# stopping the tunnel will also stop the orchestrate run and the wiremock instances
+# json output will be returned to validate if the command was successful
+tunnel_stop_by_name ${SAUCE_TUNNEL_NAME}
+
+
+# the saucectl process in the first shell
+#   which submitted the orchestreate run
+#   should stop gracefully
+#   and the orchestrate run should be marked as successfull
+#
+#   check the exit code to validate
+#   echo $?
+```
 
 ---
 
@@ -353,6 +428,7 @@ Congratulations! — You have completed the _first_ part of this workshop!
   - 3.4 Orchestrate Container — Working Entrypoint
 - Module 4
   - 4.1 Orchestrate Container — Services & Sauce Connect
+  - 4.2 Orchestrate Container — Standalone Services & Sauce Connect
   
 <br>
 
