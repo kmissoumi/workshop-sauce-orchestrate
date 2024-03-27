@@ -1,0 +1,73 @@
+apiVersion: v1alpha
+kind: imagerunner
+
+
+suites:
+  - name: sc-runner
+    image: debian:12-slim
+    resourceProfile: c3m3
+    workload: other
+    entrypoint: bash /bin/sc-runner.sh
+    env:
+      SAUCE_REGION: ${SAUCE_REGION}
+      SAUCE_USERNAME: ${SAUCE_USERNAME}
+      SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+      SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
+      SAUCE_API_ADDRESS: ":8032"
+      SAUCE_PROXY_LOCALHOST: "allow"
+      SAUCE_TUNNEL_DOMAINS: "localhost,test-runner.internal"
+      SAUCE_LOG_LEVEL: "info"
+    files:
+      - src: "${PWD}/usr/sc-runner.sh"
+        dst: "/bin/sc-runner.sh"
+    
+    services:
+    - name: proxy-madrid-00
+      image: saucelabs/sauce-connect:5.0
+      workload: other
+      env:
+        SAUCE_REGION: ${SAUCE_REGION}
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: proxy-madrid-00
+        SAUCE_API_ADDRESS: ":8132"
+        SAUCE_PROXY: "${WONDERPROXY_USER}:${WONDERPROXY_TOKEN}@madrid.wonderproxy.com:12000"
+        SAUCE_PROXY_LOCALHOST: "allow"
+        SAUCE_LOG_LEVEL: "info"
+    - name: proxy-saopaulo-00
+      image: saucelabs/sauce-connect:5.0
+      workload: other
+      env:
+        SAUCE_REGION: ${SAUCE_REGION}
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: proxy-saopaulo-00
+        SAUCE_API_ADDRESS: ":8232"
+        SAUCE_PROXY: "${WONDERPROXY_USER}:${WONDERPROXY_TOKEN}@saopaulo.wonderproxy.com:12000"
+        SAUCE_PROXY_LOCALHOST: "allow"
+        SAUCE_LOG_LEVEL: "info"
+    - name: proxy-mexicocity-00
+      image: saucelabs/sauce-connect:5.0
+      workload: other
+      env:
+        SAUCE_REGION: ${SAUCE_REGION}
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: proxy-mexicocity-00
+        SAUCE_API_ADDRESS: ":8332"
+        SAUCE_PROXY: "${WONDERPROXY_USER}:${WONDERPROXY_TOKEN}@mexicocity.wonderproxy.com:12000"
+        SAUCE_PROXY_LOCALHOST: "allow"
+        SAUCE_LOG_LEVEL: "info"
+    - name: proxy-london-00
+      image: saucelabs/sauce-connect:5.0
+      workload: other
+      env:
+        SAUCE_REGION: ${SAUCE_REGION}
+        SAUCE_USERNAME: ${SAUCE_USERNAME}
+        SAUCE_ACCESS_KEY: ${SAUCE_ACCESS_KEY}
+        SAUCE_TUNNEL_NAME: proxy-london-00
+        SAUCE_API_ADDRESS: ":8432"
+        SAUCE_PROXY: "${WONDERPROXY_USER}:${WONDERPROXY_TOKEN}@london.wonderproxy.com:12000"
+        SAUCE_PROXY_LOCALHOST: "allow"
+        SAUCE_LOG_LEVEL: "info"
+    

@@ -16,7 +16,7 @@ suites:
       SAUCE_API_ADDRESS: ":8032"
       SAUCE_PROXY_LOCALHOST: "allow"
       SAUCE_TUNNEL_DOMAINS: "localhost,test-runner.internal"
-      SAUCE_LOG_LEVEL: "debug"
+      SAUCE_LOG_LEVEL: "info"
       WIREMOCK_PORT_START: 5001
       WIREMOCK_PORT_END: 5006
     files:

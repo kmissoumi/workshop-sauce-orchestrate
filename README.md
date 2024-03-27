@@ -290,7 +290,7 @@ saucectl run --region ${SAUCE_REGION} --config .sauce/config-module-03-01.yml
 
 
 
-### Module 4 — Multi-Service Sauce Orchestrate — Test Suite and Complete Test Environment Bundle
+### Module 4 Orchestrate+ Test Suite and Complete Test Environment Bundle
 
 
 This module provides example configuration for a test suite with sidecar containers.  
@@ -305,7 +305,7 @@ Inspect the `saucectl` configuration file listed below.
   - How are dependencies validated before the test suite starts?  
 
 
-#### 4.1 Mutli-Service Sauce Orchestrate — Services & Sauce Connect
+#### 4.1 Orchestrate+ Entire App & Sauce Connect
 
 ```sh
 # saucectl support for live logs requires version 0.171.0 or later
@@ -313,10 +313,10 @@ saucectl --version
 
 # export environment variables
 env |grep SAUCE
-export SAUCE_REGION=
-export SAUCE_USERNAME=
-export SAUCE_ACCESS_KEY=
-export SAUCE_TUNNEL_NAME=
+#export SAUCE_REGION=
+#export SAUCE_USERNAME=
+#export SAUCE_ACCESS_KEY=
+#export SAUCE_TUNNEL_NAME=
 
 
 # run multi-service orchestrate example
@@ -333,16 +333,15 @@ saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-
 ```
 
 
-#### 4.2  Mutli-Service Sauce Orchestrate — Standalone Test Environments
+#### 4.2 Orchestrate+ Standalone Services & Sauce Connect
 
 
 ```sh
-
 # export environment variables
 env |grep SAUCE
-export SAUCE_REGION=
-export SAUCE_USERNAME=
-export SAUCE_ACCESS_KEY=
+#export SAUCE_REGION=
+#export SAUCE_USERNAME=
+#export SAUCE_ACCESS_KEY=
 
 # tunnel name must be unique, adding the value to file to reference in 2nd shell
 export SAUCE_TUNNEL_NAME="wiremock-net-$(uuidgen)" && printf '%s' ${SAUCE_TUNNEL_NAME} > my_tunnel_name
@@ -354,12 +353,15 @@ export SAUCE_TUNNEL_NAME="wiremock-net-$(uuidgen)" && printf '%s' ${SAUCE_TUNNEL
 #   console logs are also available via saucectl imagerunner logs
 #   https://docs.saucelabs.com/dev/cli/saucectl/imagerunner/logs/
 saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-04-02.yml
+```
 
+
+```sh
 # start a new shell
 env |grep SAUCE
-export SAUCE_REGION=
-export SAUCE_USERNAME=
-export SAUCE_ACCESS_KEY=
+#export SAUCE_REGION=
+#export SAUCE_USERNAME=
+#export SAUCE_ACCESS_KEY=
 
 # set the tunnel name from the my_tunnel_name file we created earlier
 export SAUCE_TUNNEL_NAME=$(head -n 1 my_tunnel_name)
@@ -403,6 +405,35 @@ tunnel_stop_by_name ${SAUCE_TUNNEL_NAME}
 #   echo $?
 ```
 
+#### 4.3 Orchestrate+ Proxy Party Geo-IP Edition
+
+Deploy multiple Sauce Connect instances where browsers and devices are proxied.
+Requires a WonderProxy account.
+
+
+```sh
+[[ -z ${SAUCE_USERNAME} || -z ${SAUCE_ACCESS_KEY} || -z ${SAUCE_REGION} ]] \
+    && printf "\nPlease set environment variables for "SAUCE_USERNAME", "SAUCE_ACCESS_KEY", and "SAUCE_REGION".\n"
+
+[[ -z ${WONDERPROXY_USER} || -z ${WONDERPROXY_TOKEN} ]] \
+    && printf "\nPlease set environment variables for "WONDERPROXY_USER" and "WONDERPROXY_TOKEN".\n"
+
+export SAUCE_TUNNEL_NAME="sc-monitor-$(uuidgen)"
+saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-04-03.yml
+
+
+# open sauce labs dashboard
+# select tunnel before starting browser/device session
+
+# stop the monitor sauce connect instance or cancel the orchestrate run
+
+
+# swap the sc monitor instance for your automated tests suite
+#   set the tunnelName config as noted in link below
+#   values are in the orchestrate configuration
+#   https://docs.saucelabs.com/dev/test-configuration-options/#tunnelname
+```
+
 ---
 
 
@@ -427,8 +458,9 @@ Congratulations! — You have completed the _first_ part of this workshop!
   - 3.3 Local Container — Working Entrypoint
   - 3.4 Orchestrate Container — Working Entrypoint
 - Module 4
-  - 4.1 Orchestrate Container — Services & Sauce Connect
-  - 4.2 Orchestrate Container — Standalone Services & Sauce Connect
+  - 4.1 Orchestrate Pod — Services & Sauce Connect
+  - 4.2 Orchestrate Pod — Standalone Services & Sauce Connect
+  - 4.3 Orchestrate Pod — Proxy Party Geo-IP Edition
   
 <br>
 
