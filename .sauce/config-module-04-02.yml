@@ -15,7 +15,7 @@ suites:
       SAUCE_TUNNEL_NAME: ${SAUCE_TUNNEL_NAME}
       SAUCE_API_ADDRESS: ":8032"
       SAUCE_PROXY_LOCALHOST: "allow"
-      SAUCE_TUNNEL_DOMAINS: "localhost,test-runner.internal"
+      SAUCE_TUNNEL_DOMAINS: "test-runner.internal"
       SAUCE_LOG_LEVEL: "info"
       WIREMOCK_PORT_START: 5001
       WIREMOCK_PORT_END: 5006
@@ -23,27 +23,27 @@ suites:
       - src: "${PWD}/usr/wiremock-runner.sh"
         dst: "/bin/wiremock-runner.sh"
     services:
-    - name: wiremock-5001
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5001'
-    - name: wiremock-5002
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5002'
-    - name: wiremock-5003
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5003'
-    - name: wiremock-5004
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5004'
-    - name: wiremock-5005
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5005'
-    - name: wiremock-5006
-      image: wiremock/wiremock:latest
-      env:
-        WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5006'
+      - name: wiremock-5001
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5001'
+      - name: wiremock-5002
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5002'
+      - name: wiremock-5003
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5003'
+      - name: wiremock-5004
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5004'
+      - name: wiremock-5005
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5005'
+      - name: wiremock-5006
+        image: wiremock/wiremock:latest
+        env:
+          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5006'

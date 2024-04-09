@@ -11,18 +11,19 @@
 #
 #
 
-protoHost="https://api.${SAUCE_REGION}.saucelabs.com"
-userKey="${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}"
+
 
 function pre_flight {
   binCheckCurl=$(command -v curl)
   binCheckJq=$(command -v jq)
-  [[ -z ${SAUCE_USERNAME} || -z ${SAUCE_ACCESS_KEY} || -z ${SAUCE_REGION} ]] && printf "\nPlease set environment variables for "SAUCE_USERNAME", "SAUCE_ACCESS_KEY", and "SAUCE_REGION".\n" && exit 2
-  [[ -z ${binCheckJq} || -z ${binCheckCurl} ]] && printf "\nPlease ensure "curl" and "jq" are installed and in path.\n"  && exit 2
+  [[ -z ${SAUCE_USERNAME} || -z ${SAUCE_ACCESS_KEY} || -z ${SAUCE_REGION} ]] && printf "\nPlease set environment variables for "SAUCE_USERNAME", "SAUCE_ACCESS_KEY", and "SAUCE_REGION".\n" && return 2
+  [[ -z ${binCheckJq} || -z ${binCheckCurl} ]] && printf "\nPlease ensure "curl" and "jq" are installed and in path.\n" && return 2
 }
 
 
 function sauce_get {
+  protoHost="https://api.${SAUCE_REGION}.saucelabs.com"
+  userKey="${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}" 
   r=$(curl  --request GET \
             --silent \
             --user ${userKey} \
@@ -31,12 +32,16 @@ function sauce_get {
             ${protoHost}/${1})
 
   httpStatus="${r##*$'\n'}"
+  [[ ${httpStatus} -le 199 && ${httpStatus} -ge 300 ]] && printf "\nRequest was not successfull." && return
+
   r="${r%????}"
-  jq -r <<< "${r}"
+  jq --raw-output <<< "${r}"
 }
 
 
 function sauce_delete {
+  protoHost="https://api.${SAUCE_REGION}.saucelabs.com"
+  userKey="${SAUCE_USERNAME}:${SAUCE_ACCESS_KEY}" 
   r=$(curl  --request DELETE \
             --silent \
             --user ${userKey} \
@@ -45,8 +50,10 @@ function sauce_delete {
             ${protoHost}/${1})
 
   httpStatus="${r##*$'\n'}"
+  [[ ${httpStatus} -le 199 && ${httpStatus} -ge 300 ]] && printf "\nRequest was not successfull." && return
   r="${r%????}"
-  jq  --arg httpStatus ${httpStatus} '. += {"httpStatus": $httpStatus}' <<< "${r}"
+  jq --arg httpStatus $httpStatus \
+     --raw-output '. += {"httpStatus": $httpStatus}' <<< "${r}"
 }
 
 
@@ -56,35 +63,39 @@ function tunnels_info_get {
 }
 
 
-function tunnel_get_id_by_name {
-  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+function tunnel_id_get_by_name {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return 2; } || sauceTunnelName=${1}
   pre_flight
   r=$(tunnels_info_get)
-  jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME)|select(.status == "running") |.id' <<< "${r}"
+  jq --arg sauceTunnelName $sauceTunnelName \
+     --raw-output '.[] |select(.tunnel_identifier == $sauceTunnelName)|select(.status == "running") |.id' <<< "${r}"
 }
 
 
-function tunnel_metadata_extra_get_so_runid {
-  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+function tunnel_metadata_get_so_runid_by_extra {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return 2; } || sauceTunnelName=${1}
   pre_flight
   r=$(tunnels_info_get)
-  jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME) |select(.status == "running") |.metadata.extra.runID' <<< "${r}"
+  jq --arg sauceTunnelName $sauceTunnelName \
+     --raw-output '.[] |select(.tunnel_identifier == $sauceTunnelName) |select(.status == "running") |.metadata.extra.runID' <<< "${r}"
 }
 
 
-function tunnel_metadata_hostname_get_so_runid {
-  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+function tunnel_metadata_get_so_runid_by_hostname {
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return 2; } || sauceTunnelName=${1}
   pre_flight
-  r1=$(tunnels_info_get)
-  r2=$(jq -r '.[] |select(.tunnel_identifier == env.SAUCE_TUNNEL_NAME) |select(.status == "running") |.metadata.hostname' <<< "${r1}")
-  printf '%s\n' ${r2%%-*} 
+  r=$(tunnels_info_get)
+  r=$(jq --arg sauceTunnelName $sauceTunnelName \
+     --raw-output '.[] |select(.tunnel_identifier == $sauceTunnelName) |select(.status == "running") |.metadata.hostname' <<< "${r}")
+  printf '%s\n' ${r%%-*} 
 }
 
 
 function tunnel_stop_by_name {
-  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return; } || SAUCE_TUNNEL_NAME=${1}
+  [[ -z ${1} ]] && { printf 'ERROR: No tunnel name provided.\n'; return 2; } || sauceTunnelName=${1}
   pre_flight
-  SAUCE_TUNNEL_ID=$(tunnel_get_id_by_name ${SAUCE_TUNNEL_NAME})
-  method="/rest/v1/${SAUCE_USERNAME}/tunnels/${SAUCE_TUNNEL_ID}"
+  sauceTunnelId=$(tunnel_id_get_by_name ${sauceTunnelName})
+  [[ -z ${sauceTunnelId} ]] && { printf 'ERROR: No tunnel identifier found for tunnel name "%s".\n' ${sauceTunnelName}; return 1; }
+  method="rest/v1/${SAUCE_USERNAME}/tunnels/${sauceTunnelId}"
   sauce_delete ${method}
 }
