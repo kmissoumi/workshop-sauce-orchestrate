@@ -377,7 +377,7 @@ echo ${SAUCE_TUNNEL_NAME}
 #   it calls methods documented at the link below
 #   https://docs.saucelabs.com/dev/api/connect/ 
 source ./usr/tunnel.lib
-tunnel_get_id_by_name ${SAUCE_TUNNEL_NAME}
+tunnel_id_get_by_name ${SAUCE_TUNNEL_NAME}
 
 
 # start xcuitest/espresso tests
