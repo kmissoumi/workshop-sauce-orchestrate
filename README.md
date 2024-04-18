@@ -333,7 +333,7 @@ saucectl run --live-logs --region ${SAUCE_REGION} --config .sauce/config-module-
 ```
 
 
-#### 4.2 Orchestrate+ Standalone Services & Sauce Connect
+#### 4.2a Orchestrate+ Standalone Services & Sauce Connect
 
 
 ```sh
@@ -405,6 +405,19 @@ tunnel_stop_by_name ${SAUCE_TUNNEL_NAME}
 #   echo $?
 ```
 
+
+#### 4.2b Async Mode Orchestrate+ Standalone Services & Sauce Connect 
+
+This is the same use case as 4.2, but we will invoke the Orchestrate `saucectl` process with the `async` parameter.  
+The health of the Orchestrate pod and post-run collection of the console output are operational critical.  
+
+This is just one method to demonstrate using the `async` option to suppport a synchronous pipeline.
+Other methods exist.  
+i.e. Shell job control is an excellent option. Use a method most familiar, comfortable, efficient for your team's DevOps processes and experiences.
+
+Please see [`README-module-04b`](README-module-04b) for the async example workflow.
+
+
 #### 4.3 Orchestrate+ Proxy Party Geo-IP Edition
 
 Deploy multiple Sauce Connect instances where browsers and devices are proxied.
@@ -459,7 +472,8 @@ Congratulations! — You have completed the _first_ part of this workshop!
   - 3.4 Orchestrate Container — Working Entrypoint
 - Module 4
   - 4.1 Orchestrate Pod — Services & Sauce Connect
-  - 4.2 Orchestrate Pod — Standalone Services & Sauce Connect
+  - 4.2a Orchestrate Pod — Standalone Services & Sauce Connect
+  - 4.2b 
   - 4.3 Orchestrate Pod — Proxy Party Geo-IP Edition
   
 <br>

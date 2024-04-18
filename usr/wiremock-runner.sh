@@ -9,7 +9,7 @@ install_utilities() {
 install_sauce_connect() {
     release="5.0.1"
     [[ $(uname -m) == "aarch64" ]] && arch="arm64" || arch="amd64"
-    curl -L -o /tmp/sauce-connect.deb https://saucelabs.com/downloads/sauce-connect/${release}/sauce-connect_${release}.linux_${arch}.deb
+    curl -L -o /tmp/sauce-connect.deb "https://saucelabs.com/downloads/sauce-connect/${release}/sauce-connect_${release}.linux_${arch}.deb"
     dpkg -i /tmp/sauce-connect.deb
 }
 
@@ -17,13 +17,13 @@ install_sauce_connect() {
 check_wiremocks() {
     wireMockRc=0
     i=${WIREMOCK_PORT_START}
-    until [ $i -gt ${WIREMOCK_PORT_END} ]
+    until [[ $i -gt ${WIREMOCK_PORT_END} ]]
     do
         check_wiremock ${i}
         ((wireMockRc=wireMockRc+$?))
         ((i=i+1))
     done
-    export wireMockRc
+    return ${wireMockRc}
 }
 
 
@@ -39,12 +39,12 @@ check_wiremock() {
 }
 
 
-main(){
+main() {
     sleep 5
     install_utilities
     install_sauce_connect
     check_wiremocks
-    if [[ ${wireMockRc} -ge 1 ]]; then
+    if [[ $? -ge 1 ]]; then
         printf '\nWireMock Services NOTOK...exiting\n'
         return 4
     fi
