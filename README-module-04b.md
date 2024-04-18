@@ -2,16 +2,16 @@
 
 #### 4.2b Async Mode Orchestrate+ Standalone Services & Sauce Connect 
 
-This is the same use case as 4.2, but we will invoke the Orchestrate `saucectl` process with the `async` parameter.  
+This use case is same as 4.2a, but we will invoke the Orchestrate `saucectl` process with the `async` parameter.  
 The health of the Orchestrate pod and post-run collection of the console output are operational critical.  
 
-This is just one method to demonstrate using the `async` option to suppport a synchronous pipeline.
-Other methods exist.  
-i.e. Shell job control is an excellent option. Use a method most familiar, comfortable, efficient for your team's DevOps processes and experiences.
+This example is one demonstration method using the `async` option to support a synchronous pipeline.
+Other methods exist. Use the method most familiar, comfortable, efficient for your team's DevOps processes and experiences.
+e.g., Shell job control.
 
 ```sh
 # tunnel name must be unique
-# the Orchestrate saucectl configuration passes this environment variable to set the tunnel's name
+# the orchestrate saucectl configuration passes this environment variable to set the tunnel's name
 # the main suite, will reference this variable when starting the tunnel in the Orchestrate pod
 #
 # local-env (saucectl-config) > orchestrate-pod-env > suite-container (sc-config)
