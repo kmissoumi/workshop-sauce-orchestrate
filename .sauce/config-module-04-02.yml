@@ -26,24 +26,24 @@ suites:
       - name: wiremock-5001
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5001'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5001'
       - name: wiremock-5002
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5002'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5002'
       - name: wiremock-5003
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5003'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5003'
       - name: wiremock-5004
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5004'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5004'
       - name: wiremock-5005
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5005'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5005'
       - name: wiremock-5006
         image: wiremock/wiremock:latest
         env:
-          WIREMOCK_OPTIONS: '--global-response-templating --disable-gzip --verbose --port 5006'
+          WIREMOCK_OPTIONS: '--global-response-templating --port 5006'
