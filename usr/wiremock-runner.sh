@@ -7,9 +7,10 @@ install_utilities() {
 
 
 install_sauce_connect() {
-    release="5.0.1"
+    #https://saucelabs.com/rest/v1/public/tunnels/info/versions
+    [[ -z ${SAUCE_CONNECT_RELEASE} ]] && scRelease="5.1.0" || scRelease=${SAUCE_CONNECT_RELEASE}
     [[ $(uname -m) == "aarch64" ]] && arch="arm64" || arch="amd64"
-    curl -L -o /tmp/sauce-connect.deb "https://saucelabs.com/downloads/sauce-connect/${release}/sauce-connect_${release}.linux_${arch}.deb"
+    curl -L -o /tmp/sauce-connect.deb "https://saucelabs.com/downloads/sauce-connect/${scRelease}/sauce-connect_${scRelease}.linux_${arch}.deb"
     dpkg -i /tmp/sauce-connect.deb
 }
 
@@ -43,11 +44,17 @@ main() {
     sleep 5
     install_utilities
     install_sauce_connect
+    if [[ $? -ge 1 ]]; then
+        printf '\nSauce Connect Install NOTOK...exiting\n'
+        return 4
+    fi
+    
     check_wiremocks
     if [[ $? -ge 1 ]]; then
         printf '\nWireMock Services NOTOK...exiting\n'
         return 4
     fi
+    
     printf '\nWireMock Services are OK...starting Sauce Connect!\n'
     export SAUCE_METADATA="runner=orchestrate,runID=${__SO_UUID}"
     /usr/bin/sc run

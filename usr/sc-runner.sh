@@ -7,32 +7,56 @@ install_utilities() {
 
 
 install_sauce_connect() {
-    release="5.0.1"
+    #https://saucelabs.com/rest/v1/public/tunnels/info/versions
+    [[ -z ${SAUCE_CONNECT_RELEASE} ]] && scRelease="5.1.0" || scRelease=${SAUCE_CONNECT_RELEASE}
     [[ $(uname -m) == "aarch64" ]] && arch="arm64" || arch="amd64"
-    curl -L -o /tmp/sauce-connect.deb https://saucelabs.com/downloads/sauce-connect/${release}/sauce-connect_${release}.linux_${arch}.deb
+    curl -L -o /tmp/sauce-connect.deb "https://saucelabs.com/downloads/sauce-connect/${scRelease}/sauce-connect_${scRelease}.linux_${arch}.deb"
     dpkg -i /tmp/sauce-connect.deb
 }
 
 
+check_tunnels() {
+    proxyPartyRc=0
+    apiPort=8032
+    apiPortEnd=$(( apiPort + NO_PROXY_PARTY_INSTANCES*100 ))
+    until [[ ${apiPort} -gt ${apiPortEnd} ]]
+    do
+        check_tunnel ${apiPort}
+        ((proxyPartyRc=proxyPartyRc+$?))
+        ((apiPort=apiPort+100))
+    done
+    return ${proxyPartyRc}
+}
+
+
 check_tunnel() {
-    set -e 
     apiPort=${1}
-    t=5
-    printf '\n Waiting for Sauce Connect on API Port %s to start...' ${apiPort}
-    wget --retry-connrefused --retry-on-http-error=400,503 --tries=10 http://localhost:${apiPort}/readiness \
-    && printf '\n\n\n Sauce Connect tunnel is ready!\n' || printf '\n\n\n Sauce Connect is NOTOK!\n'
+    hostName="test-runner.internal"
+    tries=4
+    printf '\nWaiting for Sauce Connect on API Port %s to start...\n' ${apiPort}
+    wget --retry-connrefused --retry-on-http-error=400,503 --tries=${tries} http://${hostName}:${apiPort}/readiness
+    wgetRc=$?
+    [[ ${wgetRc} = 0 ]] && printf 'Sauce Connect tunnel on API Port %s is ready!\n' ${apiPort} || printf 'Sauce Connect tunnel on API Port %s is NOTOK!\n' ${apiPort} 
+    return ${wgetRc}
 }
 
 
 main(){
-    set -e
+    sleep 5
     install_utilities
     install_sauce_connect
-    check_tunnel 8132
-    check_tunnel 8232
-    check_tunnel 8332
-    check_tunnel 8432
-    sleep 5
+    if [[ $? -ge 1 ]]; then
+        printf '\nSauce Connect Install NOTOK...exiting\n'
+        return 4
+    fi
+    
+    check_tunnels
+    if [[ $? -ge 1 ]]; then
+        printf '\nProxy Party Tunnels NOTOK...exiting\n'
+        return 4
+    fi
+    
+    printf '\nProxy Party Tunnels are OK...starting Sauce Connect!\n'
     export SAUCE_METADATA="runner=orchestrate,runID=${__SO_UUID}"
     /usr/bin/sc run
 }

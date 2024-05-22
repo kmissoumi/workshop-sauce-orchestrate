@@ -17,6 +17,7 @@ suites:
       SAUCE_PROXY_LOCALHOST: "allow"
       SAUCE_TUNNEL_DOMAINS: "test-runner.internal"
       SAUCE_LOG_LEVEL: "info"
+      SAUCE_CONNECT_RELEASE: 5.1.0
       WIREMOCK_PORT_START: 5001
       WIREMOCK_PORT_END: 5006
     files:
